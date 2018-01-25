@@ -2,106 +2,112 @@
   Created: Jan 14 2018
   Author: Kahin Akram Hassan
 */
-function pc(data){
+function pc(data) {
 
-  this.data = data;
-  var div = '#pc-chart';
+    this.data = data;
+    var div = '#pc-chart';
 
 
-  var parentWidth = $(div).parent().width();
-  var margin = {top: 40, right: 0, bottom: 10, left: 100},
-      width = parentWidth - margin.left - margin.right,
-      height = 400 - margin.top - margin.bottom;
+    var parentWidth = $(div).parent().width();
+    var margin = { top: 40, right: 0, bottom: 10, left: 100 },
+        width = parentWidth - margin.left - margin.right,
+        height = 400 - margin.top - margin.bottom;
 
-  //dimensions for the axes.
-  //Caution: Attributes in the function needs to be changed if  data file is changed
-  var dimensions = axesDims(height);
-  dimensions.forEach(function(dim) {
-    dim.scale.domain(dim.type === "number"
-        ? d3.extent(data, function(d) { return +d[dim.name]; })
-        : data.map(function(d) { return d[dim.name]; }).sort());
-  });
+    //dimensions for the axes.
+    //Caution: Attributes in the function needs to be changed if  data file is changed
+    var dimensions = axesDims(height);
+    dimensions.forEach(function (dim) {
+        dim.scale.domain(dim.type === "number"
+            ? d3.extent(data, function (d) { return +d[dim.name]; })
+            : data.map(function (d) { return d[dim.name]; }).sort());
+    });
 
-  //Tooltip
-  var tooltip = d3.select(div).append("div")
-       .attr("class", "tooltip")
-       .style("opacity", 0);
+    //Tooltip
+    var tooltip = d3.select(div).append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
 
-  var line = d3.line()
-     .defined(function(d) { return !isNaN(d[1]); });
+    var line = d3.line()
+        .defined(function (d) { return !isNaN(d[1]); });
 
-  //Y axis orientation
-  var yAxis = d3.axisLeft();
+    //Y axis orientation
+    var yAxis = d3.axisLeft();
 
-  var svg = d3.select(div).append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var svg = d3.select(div).append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  /* ~~ Task 6 Scale the x axis ~~*/
-  var x = d3.scaleBand()
-      .range([0, width])
-      .domain(dimensions.map(function (d) { return d.name; })); 
-  var xAxis = d3.axisBottom(x);  
+    /* ~~ Task 6 Scale the x axis ~~*/
+    var x = d3.scaleBand()
+        .range([0, width])
+        .domain(dimensions.map(function (d) { return d.name; }));
+    var xAxis = d3.axisBottom(x);
 
-  /* ~~ Task 7 Add the x axes ~~*/
-  var axes = svg.selectAll(".axes").data(dimensions)
-    .enter().append("g")
-    .attr("class", "dimension")
-    .attr("transform", function (d) { return "translate(" + x(d.name) + ")";});
+    /* ~~ Task 7 Add the x axes ~~*/
+    var axes = svg.selectAll(".axes").data(dimensions)
+        .enter().append("g")
+        .attr("class", "dimension")
+        .attr("transform", function (d) { return "translate(" + x(d.name) + ")"; });
 
 
 
     axes.append("g")
         .attr("class", "axis")
-        .each(function(d) { d3.select(this).call(yAxis.scale(d.scale)); })
+        .each(function (d) { d3.select(this).call(yAxis.scale(d.scale)); })
         .append("text")
         .attr("class", "title")
-        .style('fill','black')
-        .style('font-size','9px')
+        .style('fill', 'black')
+        .style('font-size', '9px')
         .attr("text-anchor", "middle")
         .attr("y", -9)
-        .text(function(d) { return d.name; });
+        .text(function (d) { return d.name; });
 
 
     //Task 8 initialize color scale
     var cc = [];
-
     var color = d3.scaleOrdinal(d3.schemeCategory20);
 
-    //loop
-    for (var i = 0; i < 35; ++i){   // använd data.size eller liknande istället för 35. d3.selectAll(data).size()
-        cc[i] = color(i);
-    }
-    console.log(cc);
+    data.forEach(function (d) {
+        cc.push(d.Country);
+    })
+
+    cc.forEach(function (country, index) {
+        cc[country] = color(index);
+    });
 
     var background = svg.append("g")
-       .attr("class", "background")
-       .selectAll("path")
-       .data(data)
-       .enter().append("path")
-       .attr("d", draw); // Uncomment when x axis is implemented
+        .attr("class", "background")
+        .selectAll("path")
+        .data(data)
+        .enter().append("path")
+        .attr("d", draw); // Uncomment when x axis is implemented
 
     var foreground = svg.append("g")
         .attr("class", "foreground")
         .selectAll("path")
         .data(data)
         .enter().append("path")
-        .each(function (d) { d3.select(this).style('stroke', cc[d]); })
+        .each(function (d) { d3.select(this).style('stroke', cc[d.Country]); })
+        .style("stroke", function (d) { return cc[d.Country]; })
         .attr("d", draw); // Uncomment when x axis is implemented
 
-       //Add color here
+    //Add color here
+//    d3.selectAll("line")
+ //       .style("stroke", function (d) { return cc[d.Country]; });
 
     /* ~~ Task 9 Add and store a brush for each axis. ~~*/
     axes.append("g")
         .attr("class", "brush")
-
-        /* ~~ Add brush here */
-        .each(function (d) { d3.select(this).call(yAxis.brush(d.brush)); })
-      //  .extent()
-      //  .start()
-      //  .on()
+        .each(function (d) {
+            d3.select(this).call(d.brush = d3.brushY()
+                .extent([[-10, 0], [10, height]])
+                .on("start", brushstart)
+                .on("brush", brush)
+                .on("end", brush)
+            )
+        })
         .selectAll("rect")
         .attr("x", -10)
         .attr("width", 20);

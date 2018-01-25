@@ -70,6 +70,11 @@ function pc(data){
 
     var color = d3.scaleOrdinal(d3.schemeCategory20);
 
+    //loop
+    for (var i = 0; i < 35; ++i){   // använd data.size eller liknande istället för 35. d3.selectAll(data).size()
+        cc[i] = color(i);
+    }
+    console.log(cc);
 
     var background = svg.append("g")
        .attr("class", "background")
@@ -79,11 +84,12 @@ function pc(data){
        .attr("d", draw); // Uncomment when x axis is implemented
 
     var foreground = svg.append("g")
-       .attr("class", "foreground")
-       .selectAll("path")
-       .data(data)
-       .enter().append("path")
-       .attr("d", draw) // Uncomment when x axis is implemented
+        .attr("class", "foreground")
+        .selectAll("path")
+        .data(data)
+        .enter().append("path")
+        .each(function (d) { d3.select(this).style('stroke', cc[d]); })
+        .attr("d", draw); // Uncomment when x axis is implemented
 
        //Add color here
 
@@ -92,7 +98,10 @@ function pc(data){
         .attr("class", "brush")
 
         /* ~~ Add brush here */
-
+        .each(function (d) { d3.select(this).call(yAxis.brush(d.brush)); })
+      //  .extent()
+      //  .start()
+      //  .on()
         .selectAll("rect")
         .attr("x", -10)
         .attr("width", 20);

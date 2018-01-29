@@ -76,7 +76,7 @@ function sp(data){
         .attr("class", "non_brushed")
         .attr("cx", function (d) { return xScale(d[xColumn]); })
         .attr("cy", function (d) { return yScale(d[yColumn]); })
-        .attr("r", function (d) { return d[circle_size] / 5 })
+        .attr("r", function (d) { return d[circle_size] / 9 })
         .style("fill", "none")
         .style("stroke", function (d) { return color(d[countryColumn]); })
         .style("stroke-width", 5); 

@@ -29,14 +29,14 @@ function map(data, world_map_json){
 
   /*~~ Task 11  initialize projection and path variable ~~*/
 
-  var projection = d3.geoMercator()
+//  var projection = d3.geoMercator()
       //      .scale((width - 3) / (2 * Math.PI))
-      .scale(120)
-      .center([60, 40]);
+//      .scale(120)
+//      .center([60, 40]);
 //      .translate([width / 2, height / 2]);
 
-  var path = d3.geoPath()
-      .projection(projection);
+//  var path = d3.geoPath()
+//      .projection(projection);
     
     //svg
   var svg = d3.select(div).append("svg")

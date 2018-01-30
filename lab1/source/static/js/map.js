@@ -99,8 +99,8 @@ function map(data, world_map_json){
       //selection
       .on("click",  function(d) {
           /*~~ call the other graphs method for selection here ~~*/
-          selectLine(d);
-          selecDots(d);
+          //selectLine(d);
+          sp.selectDots(d);
       });
 
   function move() {

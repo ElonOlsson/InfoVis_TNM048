@@ -77,9 +77,9 @@ function sp(data){
         .attr("cx", function (d) { return xScale(d[xColumn]); })
         .attr("cy", function (d) { return yScale(d[yColumn]); })
         .attr("r", function (d) { return d[circle_size] / 9 })
-        .style("fill", "none")
-        .style("stroke", function (d) { return color(d[countryColumn]); })
-        .style("stroke-width", 5); 
+        .style("stroke", "none")
+        .style("fill", function (d) { return color(d[countryColumn]); });
+        //.style("stroke-width", 5); 
         
 
     /* ~~ Task 5 create the brush variable and call highlightBrushedCircles() ~~ */
@@ -89,40 +89,55 @@ function sp(data){
             .extent([[0, 0], [width, height]])
             .on("end", highlightBrushedCircles));
 
-         //highlightBrushedCircles function
-         function highlightBrushedCircles() {
-             if (d3.event.selection != null) {
-                 // revert circles to initial style
-                 circles.attr("class", "non_brushed");
-                 var brush_coords = d3.brushSelection(this);
-                 // style brushed circles
-                   circles.filter(function (){
-                            var cx = d3.select(this).attr("cx");
-                            var cy = d3.select(this).attr("cy");
-                            return isBrushed(brush_coords, cx, cy);
-                  })
-                  .attr("class", "brushed");
-                   var d_brushed =  d3.selectAll(".brushed").data();
+        //highlightBrushedCircles function
+        function highlightBrushedCircles() {
+            if (d3.event.selection != null) {
+                // revert circles to initial style
+                circles.attr("class", "non_brushed");
+                var brush_coords = d3.brushSelection(this);
+                // style brushed circles
+                circles.filter(function (){
+                        var cx = d3.select(this).attr("cx");
+                        var cy = d3.select(this).attr("cy");
+                        return isBrushed(brush_coords, cx, cy);
+                })
+                .attr("class", "brushed");
+                var d_brushed =  d3.selectAll(".brushed").data();
 
 
-                   /* ~~~ Call pc or/and map function to filter ~~~ */
+                /* ~~~ Call pc or/and map function to filter ~~~ */
+                //selectLine(d_brushed);   //hur får man access till dessa? 
+                //selectCoutnry(d_brushed);
+            }
+        }//highlightBrushedCircles
+        function isBrushed(brush_coords, cx, cy) {
+            var x0 = brush_coords[0][0],
+                x1 = brush_coords[1][0],
+                y0 = brush_coords[0][1],
+                y1 = brush_coords[1][1];
+            return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;
+        }//isBrushed
 
-             }
-         }//highlightBrushedCircles
-         function isBrushed(brush_coords, cx, cy) {
-              var x0 = brush_coords[0][0],
-                  x1 = brush_coords[1][0],
-                  y0 = brush_coords[0][1],
-                  y1 = brush_coords[1][1];
-             return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;
-         }//isBrushed
+
+
+        //Select all the dots filtered
+        //? hur gör man dessa funktioner?
+        this.selectDots = function (value) {
+            var dots = d3.selectAll(".non_brushed");
+            dots.style("stroke", function (dot) {
+                return value.every(function (c) {
+                    return c.Country != dot.Country ? "black" : null;
+                }) ? null : "black";
+            });
+            
+            //        return (value.Country == d.Country) ? color(d.Country) : "none";
+            //    });
+        }
 
 
 
-         //Select all the dots filtered
-         this.selecDots = function(value){
 
-         };
+
 
 
 }//End

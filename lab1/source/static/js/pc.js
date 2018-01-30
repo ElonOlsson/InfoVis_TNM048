@@ -51,8 +51,6 @@ function pc(data) {
         .attr("class", "dimension")
         .attr("transform", function (d) { return "translate(" + x(d.name) + ")"; });
 
-
-
     axes.append("g")
         .attr("class", "axis")
         .each(function (d) { d3.select(this).call(yAxis.scale(d.scale)); })
@@ -94,7 +92,7 @@ function pc(data) {
         .attr("d", draw); // Uncomment when x axis is implemented
 
     //Add color here
-//    d3.selectAll("line")
+   // d3.selectAll("line")
  //       .style("stroke", function (d) { return cc[d.Country]; });
 
     /* ~~ Task 9 Add and store a brush for each axis. ~~*/
@@ -116,7 +114,6 @@ function pc(data) {
     var projection = svg.selectAll(".background path, .foreground path")
         .on("mouseover", mouseover)
         .on("mouseout", mouseout);
-
 
     function mouseover(d) {
 
@@ -163,7 +160,7 @@ function pc(data) {
     function brushstart() {
       d3.event.sourceEvent.stopPropagation();
     }
-
+    
     // Handles a brush event, toggling the display of foreground lines.
     function brush(d) {
 
@@ -178,23 +175,26 @@ function pc(data) {
           extent: d3.brushSelection(this)
         });
       });
-
+      var selectedData = [];
       foreground.style("display", function (d) {
           return actives.every(function (active) {
              var dim = active.dim;
              var ext = active.extent;
-             var l = within(d, ext, dim);
+             var l = within(d, ext, dim, selectedData);
              return l;
           }) ? null : "none";
       });
 
-      function within(d, extent, dim) {
+      function within(d, extent, dim, selectedData) {
         var w =  dim.scale(d[dim.name]) >= extent[0]  && dim.scale(d[dim.name]) <= extent[1];
 
+        
         if(w){
             /* ~~ Call the other graphs functions to highlight the brushed.~~*/
+            selectedData.push(d);
+            map.selectCountry(d);
         }
-
+        sp.selectDots(selectedData);
         return w;
       };
 
@@ -204,6 +204,7 @@ function pc(data) {
     //Select all the foregrounds send in the function as value
     this.selectLine = function(value){
        /* ~~ Select the lines ~~*/
+        //brush(value);
     };
 
     function axesDims(height){

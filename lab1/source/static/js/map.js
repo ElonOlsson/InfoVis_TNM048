@@ -29,15 +29,15 @@ function map(data, world_map_json){
 
   /*~~ Task 11  initialize projection and path variable ~~*/
 
-//  var projection = d3.geoMercator()
+  var projection = d3.geoMercator()
       //      .scale((width - 3) / (2 * Math.PI))
-//      .scale(120)
-//      .center([60, 40]);
+      .scale(120)
+      .center([60, 40]);
 //      .translate([width / 2, height / 2]);
 
-//  var path = d3.geoPath()
-//      .projection(projection);
-    
+  var path = d3.geoPath()
+      .projection(projection);
+
     //svg
   var svg = d3.select(div).append("svg")
       .attr("width", width)
@@ -51,7 +51,7 @@ function map(data, world_map_json){
         world_map_json.objects.countries).features;
 
   var country = g.selectAll(".country").data(countries);
- 
+
   //then add the path to country variable
   //data.forEach(function (d) {
    //   country.append(d.path);
@@ -69,9 +69,9 @@ function map(data, world_map_json){
 
   country.enter().insert("path")
       .attr("class", "country")
-
+      .attr("d", path)
       /*~~ Task 11  add path variable as attr d here. ~~*/
-      .attr("path", function (d) { return d.path; })
+      //.attr("path", function (d) { return d.path; })
       .attr("id", function(d) { return d.id; })
       .attr("title", function(d) { return d.properties.name; })
       .style("fill", function(d) { return cc[d.properties.name]; })
@@ -99,6 +99,8 @@ function map(data, world_map_json){
       //selection
       .on("click",  function(d) {
           /*~~ call the other graphs method for selection here ~~*/
+          selectLine(d);
+          selecDots(d);
       });
 
   function move() {

@@ -14,9 +14,11 @@ function map(data, world_map_json){
             height = 500 - margin.top - margin.bottom;
 
   /*~~ Task 10  initialize color variable ~~*/
-  var color = d3.scaleOrdinal(d3.schemeCategory20);
-
-  //initialize zoom
+  
+  
+  var colorScheme = d3.scaleOrdinal(d3.schemeCategory20);
+  
+   //initialize zoom
   var zoom = d3.zoom()
     .scaleExtent([1, 10])
     .on('zoom', move);
@@ -28,17 +30,14 @@ function map(data, world_map_json){
 
 
   /*~~ Task 11  initialize projection and path variable ~~*/
-
+  
   var projection = d3.geoMercator()
-      //      .scale((width - 3) / (2 * Math.PI))
-      .scale(120)
-      .center([60, 40]);
-//      .translate([width / 2, height / 2]);
-
+	 .scale(120)
+	 .translate([width / 2, height / 2]);
+	 
   var path = d3.geoPath()
       .projection(projection);
 
-    //svg
   var svg = d3.select(div).append("svg")
       .attr("width", width)
       .attr("height", height)
@@ -52,29 +51,25 @@ function map(data, world_map_json){
 
   var country = g.selectAll(".country").data(countries);
 
-  //then add the path to country variable
-  //data.forEach(function (d) {
-   //   country.append(d.path);
-  //})
-
   /*~~ Task 12  initialize color array ~~*/
   var cc = [];
-  data.forEach(function (d) {
-      cc.push(d.Country);
-  })
-
-  cc.forEach(function (country, index) {
-      cc[country] = color(index);
-  });
-
+  
+	data.forEach(function(d){
+		
+		cc[d["Country"]] = colorScheme(d["Country"]);
+		
+	
+	});
+		
   country.enter().insert("path")
       .attr("class", "country")
+
+        /*~~ Task 11  add path variable as attr d here. ~~*/
       .attr("d", path)
-      /*~~ Task 11  add path variable as attr d here. ~~*/
-      //.attr("path", function (d) { return d.path; })
       .attr("id", function(d) { return d.id; })
       .attr("title", function(d) { return d.properties.name; })
       .style("fill", function(d) { return cc[d.properties.name]; })
+	  
 
       //tooltip
       .on("mousemove", function(d) {
@@ -98,9 +93,13 @@ function map(data, world_map_json){
 
       //selection
       .on("click",  function(d) {
-          /*~~ call the other graphs method for selection here ~~*/
-          //selectLine(d);
-          sp.selectDots(d);
+	
+			// var countryObject = [{ "Country": d.properties.name}];
+		  
+			pc.selectLine(d);
+			sp.selectDots(d);
+		  
+		
       });
 
   function move() {
@@ -110,6 +109,16 @@ function map(data, world_map_json){
 
     /*~~ Highlight countries when filtering in the other graphs~~*/
   this.selectCountry = function(value){
+	  
+		var country = d3.selectAll('.country');
+			country.style('stroke', function(d){
+				
+				return value.every(function(v){
+			
+					return v.Country != d.properties.name ? "blue": null
+					
+			})? null : "blue" 
+		});
 
   }
 

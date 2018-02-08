@@ -9,8 +9,13 @@ function kmeans(data, k) {
 
     //Implement the algorithm here..
     //Remember to reference any code that you have not implemented yourself! 
-	
-	
+
+	//det axel och fanny sa
+    console.log(data.length);
+    var selection = d3.selectAll(data);
+    var eleventhDimension = Object.keys(selection._groups[0][1]).length;
+	console.log("eleventh Dimension = " + eleventhDimension);
+    console.log("selection.A = " + selection._groups[0][1].A);
     //1. Randomly place k points. Initial centroids
 	
     var centroidArray = [];
@@ -87,28 +92,10 @@ function kmeans(data, k) {
 			totSum += sumSquaredDistance;			//detta sumsystemet var mest bara för att testa och se hur mycket felet blir
 			console.log("totSum: " + totSum);
 		}
-		if (totSum > 1) {	//ska vara < än ett rimligt tröskelvärde.
+		if (totSum < 701) {	//ska vara < än ett rimligt tröskelvärde.
 			return assignedData;
 		}
 	}
-
-
-	//	jämför med tröskelvärde
-
-	//	om det är större: iterera 2-4
-
-	//	om inte: retunera
-	
-	
-	
-
-	
-	
-	
-	
-	
-	
-
 };
 
 

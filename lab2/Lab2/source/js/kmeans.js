@@ -27,7 +27,7 @@ function kmeans(data, k) {
 
     // K stycken dynamiska arrayer
     var assignedData = [];
-	 var   cols = 4;
+	var   cols = k;
 
 //init the grid matrix
 for ( var i = 0; i < cols; i++ ) {
@@ -35,7 +35,7 @@ for ( var i = 0; i < cols; i++ ) {
 }
 	
 	
-	console.log(assignedData.length)
+	console.log("Size of k: "+assignedData.length);
 	
 	
     for(var i=0 ; i < data.length; ++i){
@@ -53,7 +53,10 @@ for ( var i = 0; i < cols; i++ ) {
         }
 		assignedData[closesedCentroidIndex].push(i);
     }
-
+    console.log(assignedData[0][0]);
+    console.log(assignedData[1][0]);
+    console.log(assignedData[2][0]);
+    console.log(assignedData[3][0]);
 
     //3. recalculate the posision of the k centroids to be in the center of the cluster
     //   This is achieved by calculating the average values in all dimensions.
@@ -79,7 +82,16 @@ for ( var i = 0; i < cols; i++ ) {
 	}
 	
 	//4. Check the quality of the cluster. Use the sum of the squared distance within each cluster as your measure of quality.
-    //   Kolla ekvation.
+    //  räkna ut summan.
+
+	
+
+
+	//	jämför med tröskelvärde
+
+	//	om det är större: iterera 2-4
+
+	//	om inte: retunera
 	
 	
 	

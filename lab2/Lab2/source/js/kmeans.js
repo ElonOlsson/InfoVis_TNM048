@@ -5,37 +5,42 @@
 * @return {Object}
 */
 
+
+
+
+
+//note to self: kolla så inte centroidArray har dataobject, utan istället själva positionen.
+
+
+
 function kmeans(data, k) {
 
 	//Implement the algorithm here..
 	//Remember to reference any code that you have not implemented yourself! 
-
+    var assignedData =[];
 	/***********
 	*Functions
 	************/
 	function creatCentroid(){
 		for(var i=0 ; i<k ; ++i){
 			var c = Math.floor((Math.random() * data.length) + 1);
-			console.log(c);
 			centroidArray.push(data[c]);
-			console.log("what's inside centroidArray at position A: " + i + " : " + centroidArray[i].A);
-		}
+			console.log("centroidArray : " + centroidArray);
+    	}
 	};
 	function assignDataToCentroid(){
 		//set to empty
-		for (var i = 0; i < k; ++i) {
+        for (var i = 0; i < k; ++i) {
             assignedData[i] = [];
         }
-        console.log("Size of k: " + k + ". Size of assignedData: " + assignedData.length);
-	
+
 		//calculate
 		for (var i = 0; i < data.length; ++i) {	//for each dataelement
 			var distance = 1000;
 			var closesedCentroidIndex = 0;
 
             for (var j = 0; j < k; ++j) {		//for each cluster
-                //var theSmallestDistance = Math.sqrt(Math.pow(centroidArray[j].A - data[i].A, 2) + Math.pow(centroidArray[j].B - data[i].B, 2) + Math.pow(centroidArray[j].C - data[i].C, 2));
-				var theSmallestDistance = calculateEuclideanDistance(data[i], centroidArray[j]);
+                var theSmallestDistance = calculateEuclideanDistance(data[i], centroidArray[j]);
 				if (theSmallestDistance <= distance) {
 					distance = theSmallestDistance;
 					//peka på just den här centroiden;
@@ -44,28 +49,38 @@ function kmeans(data, k) {
 			}
 			assignedData[closesedCentroidIndex].push(data[i]);	//pusha in dataelement istället för int
 		}
-		console.log(assignedData[0][0]);
-		console.log(assignedData[1][0]);
-		console.log(assignedData[2][0]);
-		console.log(assignedData[3][0]);
 		
 	};
-	function calculateEuclideanDistance(p1, p2){
-		for(var i=0 ; i<nrOfDim ; ++i){
-			//något med keys. A-A, B-B ...etc
+	function calculateEuclideanDistance(p1, p2) {
+    	var totSum = 0;
+    	for(datapoint in data[0]){
+    		totSum += Math.pow(p1[datapoint]-p2[datapoint],2);
 		}
-		
-		return Math.abs(p1-p2);
+		return Math.sqrt(totSum);
 	};
 	
-	function calculateClusterAverage(c){
-		//var newC = ?
-		for(var i=0 ; i<nrOfDim ; ++i){
-			//något med keys. Loopar antal dimensioner.
-			//räkna ut average
+	function calculateClusterAverage(clusterElements){	//i is index of dataelement.
+
+		//summing
+		var sumOfDimensions = [];
+		var thisSum = 0;
+        for(datapoint in clusterElements[0]){
+            for(var i=0 ; i<clusterElements.length ; ++i){
+           		thisSum += parseFloat(clusterElements[i][datapoint]);
+			}
+			sumOfDimensions.push(thisSum);
 		}
-		return newC;
-		
+
+		//averageing
+        var averagePerDimensions = [];
+		var thisAverage = 0;
+		for(var i=0 ; i<sumOfDimensions.length ; ++i){
+            thisAverage = sumOfDimensions[i]/clusterElements.length;
+			averagePerDimensions.push(thisAverage);
+		}
+
+		return averagePerDimensions;
+
 	};
 	
 	function squaredDistance(p1, p2){
@@ -84,21 +99,27 @@ function kmeans(data, k) {
 	console.log("selection.A = " + selection._groups[0][1].A);
 
 
+
 	//1. Randomly place k points. Initial centroids
 	var centroidArray = [];
 	creatCentroid();
-	
+
+	var counter=1;
 	do{
-		//2. Assign all items to the closest centroid with euclidiskt avstånd
-		var assignedData = [];
+        //2. Assign all items to the closest centroid with euclidiskt avstånd
+		//var assignedData = [];
 		assignDataToCentroid();
-		
+
 		//3. recalculate the posision of the k centroids to be in the center of the cluster
 		//   This is achieved by calculating the average values in all dimensions.
-		var average = 0;
+		var everyClustersAverage = [];
+		/*for(datapoint in data[1]){
+			average.push(calculateClusterAverage(datapoint));
+		}*/
 		for(var i=0 ; i<k ; ++i){
-			centroidArray[i] = calculateClusterAverage(centroidArray[i]);
+			centroidArray[i] = calculateClusterAverage(assignedData[i]);
 		}
+		//console.log("average: " + everyClustersAverage);
 		
 		//4. Check the quality of the cluster. Use the sum of the squared distance within each cluster as your measure of quality.
 		//  räkna ut summan.
@@ -115,8 +136,9 @@ function kmeans(data, k) {
 		}
 			
 	//chick quality
-	}while(totError > 0.00001);
-	return assignData;	
+	}while(totError > 0.001);
+console.log("counter: " + counter);
+return assignedData;
 };
 
 

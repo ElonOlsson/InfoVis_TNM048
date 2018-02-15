@@ -5,7 +5,7 @@
 function pc(data1,data2,data3){
 
   //Chage data set
-  var data = data1;
+  var data = data2;
 
   var div = '#pc-chart';
 

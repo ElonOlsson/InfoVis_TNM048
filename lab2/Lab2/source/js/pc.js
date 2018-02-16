@@ -5,7 +5,7 @@
 function pc(data1,data2,data3){
 
   //Chage data set
-  var data = data2;
+  var data = data3;
 
   var div = '#pc-chart';
 
@@ -40,8 +40,11 @@ function pc(data1,data2,data3){
            );
    }));
 
-   var k = 4;
-   var kmeansRes = kmeans(data,k);
+       var k = 5;
+       console.log("time: ")
+       console.time("kmeans");
+       var kmeansRes = kmeans(data,k);
+       console.timeEnd("kmeans");
 
    draw(kmeansRes);
 

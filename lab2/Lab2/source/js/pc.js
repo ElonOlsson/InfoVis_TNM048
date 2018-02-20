@@ -40,7 +40,7 @@ function pc(data1,data2,data3){
            );
    }));
 
-       var k = 5;
+       var k = 6;
        console.log("time: ")
        console.time("kmeans");
        var kmeansRes = kmeans(data,k);
